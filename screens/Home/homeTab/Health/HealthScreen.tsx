@@ -2,14 +2,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { Ionicons } from '@expo/vector-icons';
-import HealthModal from '@/components/MyPage/Health/HealthModal';
-import DateSelectionModal from '@/components/MyPage/Health/DateSelectionModal';
-import AddSleepModal from '@/components/MyPage/Health/AddSleepModal';
-import AddExerciseModal from '@/components/MyPage/Health/AddExerciseModal';
-import AddMealModal from '@/components/MyPage/Health/AddMealModal';
-import AddWeightInfoModal from '@/components/MyPage/Health/AddWeightInfoModal';
-import SleepTrackingModal from '@/components/MyPage/Health/SleepTrackingModal';
+import HealthModal from '@/components/Home/homeTab/Health/HealthModal';
+import DateSelectionModal from '@/components/Home/homeTab/Health/DateSelectionModal';
+import AddSleepModal from '@/components/Home/homeTab/Health/AddSleepModal';
+import AddExerciseModal from '@/components/Home/homeTab/Health/AddExerciseModal';
+import AddMealModal from '@/components/Home/homeTab/Health/AddMealModal';
+import AddWeightInfoModal from '@/components/Home/homeTab/Health/AddWeightInfoModal';
+import SleepTrackingModal from '@/components/Home/homeTab/Health/SleepTrackingModal';
 // import ExerciseTrackingModal from '@/components/Health/ExerciseTrackingModal';
 // import MealLogModal from '@/components/Health/MealLogModal';
 
@@ -53,7 +52,7 @@ const HealthScreen = () => {
   const [modalType, setModalType] = useState('');
 
   // 모달 오픈 함수
-  const openModal = (type) => {
+  const openModal = (type: string) => {
     setModalType(type);
     setModalVisible(true);
   };

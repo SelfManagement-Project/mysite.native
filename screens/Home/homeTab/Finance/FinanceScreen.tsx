@@ -1,9 +1,9 @@
 // src/screens/MyPage/FinanceScreen.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import CategoryChart from '@/components/MyPage/Finance/CategoryChart';
-import ProgressChart from '@/components/MyPage/Finance/ProgressChart';
-import IncomeExpenseChart from '@/components/MyPage/Finance/IncomeExpenseChart';
+import CategoryChart from '@/components/Home/homeTab/Finance/CategoryChart';
+import ProgressChart from '@/components/Home/homeTab/Finance/ProgressChart';
+import IncomeExpenseChart from '@/components/Home/homeTab/Finance/IncomeExpenseChart';
 
 const FinanceScreen = () => {
   // 임시 데이터
@@ -36,7 +36,7 @@ const FinanceScreen = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('');
 
-  const openModal = (type) => {
+  const openModal = (type: string) => {
     setModalType(type);
     setShowModal(true);
   };

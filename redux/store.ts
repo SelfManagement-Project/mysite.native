@@ -1,11 +1,11 @@
-// src/redux/store.ts
+// redux/store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from '@/redux/reducers/Auth/userReducer';
-import urlReducer from '@/redux/reducers/urlSlice';
+import urlReducer from '@/redux/urlSlice';
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
+    user: userReducer,  // 'user' 대신 'auth'로 변경
     url: urlReducer,
   },
   middleware: (getDefaultMiddleware) => 

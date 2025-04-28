@@ -1,7 +1,7 @@
 // src/screens/MyPage/ScheduleScreen.tsx
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import ScheduleProgressBar from '@/components/MyPage/Schedule/ScheduleProgressBar';
+import ScheduleProgressBar from '@/components/Home/homeTab/Schedule/ScheduleProgressBar';
 
 const ScheduleScreen = () => {
   // 임시 데이터

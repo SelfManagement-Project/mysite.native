@@ -1,15 +1,43 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform, View, StyleSheet } from 'react-native';
-
+import { Platform, View, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { logout } from '@/redux/reducers/Auth/userReducer';
+import { useDispatch } from 'react-redux';
+import { router } from 'expo-router';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const isAuthenticated = useSelector((state: any) => state.user?.isAuthenticated);
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    Alert.alert('로그아웃', '정말 로그아웃 하시겠습니까?', [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '확인',
+        onPress: async () => {
+          try {
+            await AsyncStorage.removeItem('token');
+            // 토큰 삭제 확인
+            const removedToken = await AsyncStorage.getItem('token');
+            console.log('토큰 삭제 후:', removedToken); // null이어야 함
+            
+            dispatch(logout());
+            router.replace('/(tabs)');
+          } catch (error) {
+            console.error('로그아웃 오류:', error);
+          }
+        },
+      },
+    ]);
+  };
 
   return (
     <Tabs
@@ -25,8 +53,8 @@ export default function TabLayout() {
             },
             default: {},
           }),
-          height: 65, // 탭바 높이 증가
-          paddingBottom: 10, // 하단 패딩 추가
+          height: 65,
+          paddingBottom: 10,
         },
       }}>
 
@@ -50,34 +78,50 @@ export default function TabLayout() {
               <IconSymbol size={28} name="house.fill" color="white" />
             </View>
           ),
-          tabBarLabel: () => null, // 텍스트 레이블 제거
+          tabBarLabel: () => null,
         }}
       />
       <Tabs.Screen
         name="LoginTab"
         options={{
-          title: 'Login',
+          title: isAuthenticated ? 'LogOut' : 'Login',
           tabBarIcon: ({ color }) => (
             <View style={styles.tabIconContainer}>
-              <IconSymbol size={24} name="paperplane.fill" color={color} />
+              <IconSymbol
+                size={24}
+                name={isAuthenticated ? "person.fill" : "lock.fill"}
+                color={color}
+              />
             </View>
           ),
+          tabBarButton: (props: any) => {
+            if (isAuthenticated) {
+              return (
+                <TouchableOpacity
+                  {...props}
+                  onPress={handleLogout}
+                >
+                  {props.children}
+                </TouchableOpacity>
+              );
+            } else {
+              return <HapticTab {...props} />;
+            }
+          },
         }}
       />
     </Tabs>
   );
 }
 
-
 const styles = StyleSheet.create({
   centerButtonContainer: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#4078f5', // 원하는 색상으로 변경
+    backgroundColor: '#4078f5',
     justifyContent: 'center',
     alignItems: 'center',
-    // 그림자 효과
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -92,6 +136,6 @@ const styles = StyleSheet.create({
     width: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    top: -5, // 다른 아이콘들도 약간 위로 조정
+    top: -5,
   }
 });

@@ -1,11 +1,21 @@
-// src/screens/MyPage/HabitScreen.tsx
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import HabitHubBar from '@/components/MyPage/Schedule/HabitHubBar';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import HabitHubBar from '@/components/Home/homeTab/Schedule/HabitHubBar';
+
+interface HabitData {
+  habitId: number;
+  name: string;
+  completed: number;
+  remaining: number;
+}
 
 const HabitScreen = () => {
-  // 임시 데이터
-  const habits = [
+  // 타입을 명확하게 지정
+  const [isLoading, setIsLoading] = useState(true);
+  const [habits, setHabits] = useState<HabitData[]>([]);
+  
+  // 임시 데이터 (추후 API에서 가져올 데이터)
+  const mockHabits: HabitData[] = [
     { habitId: 1, name: '운동하기', completed: 70, remaining: 30 },
     { habitId: 2, name: '독서하기', completed: 50, remaining: 50 },
     { habitId: 3, name: '물 마시기', completed: 90, remaining: 10 },
@@ -16,14 +26,40 @@ const HabitScreen = () => {
     { habitId: 3, name: '물 마시기', completed: 90, isCompleted: true, description: '하루 2리터 물 마시기', goalCount: 7 },
   ];
 
-  const [activeRange, setActiveRange] = useState(null);
+  const [activeRange, setActiveRange] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('');
 
-  const openModal = (type) => {
+  useEffect(() => {
+    // 데이터 로딩 시뮬레이션
+    // const loadData = async () => {
+    //   try {
+    //     // 실제로는 여기서 API 호출
+    //     await new Promise(resolve => setTimeout(resolve, 100));
+    //     setHabits(mockHabits);
+    //     setIsLoading(false);
+    //   } catch (error) {
+    //     console.error('데이터 로딩 실패:', error);
+    //     setIsLoading(false);
+    //   }
+    // };
+    setHabits(mockHabits);
+    setIsLoading(false);
+    // loadData();
+  }, []);
+
+  const openModal = (type: string) => {
     setModalType(type);
     setShowModal(true);
   };
+
+  if (isLoading) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="#5c6bc0" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -41,7 +77,11 @@ const HabitScreen = () => {
 
       <View style={styles.chartContainer}>
         <Text style={styles.sectionTitle}>습관</Text>
-        <HabitHubBar data={habits} />
+        {habits.length > 0 ? (
+          <HabitHubBar data={habits} />
+        ) : (
+          <Text style={styles.noDataText}>습관 데이터가 없습니다.</Text>
+        )}
       </View>
 
       <View style={styles.todayHabits}>
@@ -96,6 +136,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f4f6fc',
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataText: {
+    textAlign: 'center',
+    color: '#666',
+    padding: 20,
   },
   header: {
     flexDirection: 'row',
