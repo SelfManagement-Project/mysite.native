@@ -4,6 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, useColorScheme } from 'react-n
 import { styles, darkStyles } from './LoginScreen.styles';
 import useLoginForm from '@/hooks/Auth/useLoginForm';
 import { Ionicons } from '@expo/vector-icons'; // 아이콘 임포트
+import { router } from 'expo-router';
 
 const LoginScreen = () => {
   const {
@@ -17,7 +18,7 @@ const LoginScreen = () => {
     <View style={theme.container}>
       {/* 뒤로가기 버튼 추가 */}
       <TouchableOpacity
-        // onPress={() => navigation.goBack()} 
+        onPress={() => router.replace('/(tabs)')} 
         style={theme.backButton || { position: 'absolute', top: 40, left: 20 }}
       >
         <Ionicons name="arrow-back" size={24} color={colorScheme === 'dark' ? '#fff' : '#333'} />

@@ -41,7 +41,7 @@ const HomeScreen = () => {
   );
 
   const handleStartButton = async () => {
-    router.navigate('/(tabs)/LoginTab');
+    router.navigate('/(tabs)/loginTab');
   };
 
 

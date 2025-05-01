@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from './ThemedText';
@@ -12,15 +11,21 @@ import HabitScreen from '@/screens/Home/homeTab/Schedule/HabitScreen';
 import HealthScreen from '@/screens/Home/homeTab/Health/HealthScreen';
 import FinanceScreen from '@/screens/Home/homeTab/Finance/FinanceScreen';
 import LocationScreen from '@/screens/Home/homeTab/Location/LocationScreen';
-import NoticeScreen from '@/screens/Home/homeTab/Notice/NoticeScreen';
-import LearnMoreScreen from '@/screens/Home/homeTab/LearnMore/LearnMoreScreen';
-import HelpCenterScreen from '@/screens/Home/homeTab/HelpCenter/HelpCenterScreen';
+import NoticeScreen from '@/screens/Home/homeTab/Alert/AlertScreen';
+import MoreScreen from '@/screens/Home/homeTab/More/MoreScreen';
 import { useSelector } from 'react-redux';
+import { useRouter } from 'expo-router';
 
 const ParallaxScrollView = () => {
   const [tab, setTab] = useState(0);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const isAuthenticated = useSelector((state: any) => state.user?.isAuthenticated);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+
+  const handleSearch = async () => {
+    console.log('검색 버튼 클릭');
+    router.push('/(router)/searchResult');
+  };
 
   // 로컬 상태와 Redux 상태를 동기화
   useEffect(() => {
@@ -28,22 +33,22 @@ const ParallaxScrollView = () => {
   }, [isAuthenticated]);
 
   // 컴포넌트가 마운트될 때와 화면에 포커스될 때마다 로그인 상태 확인
-  useFocusEffect(
-    React.useCallback(() => {
-      const checkAuth = async () => {
-        try {
-          const token = await AsyncStorage.getItem('token');
-          console.log('화면 포커스 - 토큰 확인:', token);
-          setIsLoggedIn(!!token);
-        } catch (error) {
-          console.error('토큰 확인 중 오류:', error);
-          setIsLoggedIn(false);
-        }
-      };
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     const checkAuth = async () => {
+  //       try {
+  //         const token = await AsyncStorage.getItem('token');
+  //         console.log('화면 포커스 - 토큰 확인:', token);
+  //         setIsLoggedIn(!!token);
+  //       } catch (error) {
+  //         console.error('토큰 확인 중 오류:', error);
+  //         setIsLoggedIn(false);
+  //       }
+  //     };
 
-      checkAuth();
-    }, [])
-  );
+  //     checkAuth();
+  //   }, [])
+  // );
 
   const content = useMemo(() => {
     switch (tab) {
@@ -51,18 +56,17 @@ const ParallaxScrollView = () => {
       case 1: return <DashboardScreen />;
       case 2: return <ScheduleScreen />;
       case 3: return <HabitScreen />;
-      case 4: return <HealthScreen />;
-      case 5: return <FinanceScreen />;
-      case 6: return <LocationScreen />;
-      case 7: return <NoticeScreen />;
-      case 8: return <LearnMoreScreen />;
-      case 9: return <HelpCenterScreen />;
+      case 4: return <NoticeScreen />;
+      case 5: return <HealthScreen />;
+      case 6: return <FinanceScreen />;
+      case 7: return <LocationScreen />;
+      case 8: return <MoreScreen />;
       default: return null;
     }
   }, [tab]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
         {isLoggedIn ? (
           <>
@@ -80,7 +84,7 @@ const ParallaxScrollView = () => {
                   placeholderTextColor="#9CA3AF"
                 />
               </View>
-              <TouchableOpacity style={styles.searchButton}>
+              <TouchableOpacity style={styles.searchButton} onPress={() => {handleSearch()}}>
                 <ThemedText style={styles.searchButtonText}>검색</ThemedText>
               </TouchableOpacity>
             </View>
@@ -99,7 +103,8 @@ const ParallaxScrollView = () => {
       {isLoggedIn ? (
         <>
           <Tabs
-            menus={['홈', '대시보드', '일정', '습관', '건강', '재정', '위치', '알림', '더보기', '도움말']}
+            menus={['Home', 'Dashboard', 'Schedule', 'Habit', 'Alert', 'Health', 'Finance', 'Loacation', 'Moere']}
+            iconName={['home', 'dashboard', 'calendar', 'check-square-o', 'bell', 'heartbeat', 'money', 'location-arrow', 'th-list']}
             onSelectHandler={(index: number) => {
               setTab(index);
             }}
@@ -113,7 +118,7 @@ const ParallaxScrollView = () => {
       ) : (
         <HomeScreen />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

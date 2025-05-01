@@ -1,14 +1,15 @@
 import { View, Pressable, Text, Animated, ScrollView, StyleSheet } from 'react-native';
 import React from 'react';
-
+import  Ionicons  from '@expo/vector-icons/FontAwesome'; // 또는 원하는 아이콘 라이브러리
 interface Props {
     menus: string[];
+    iconName?: string[];
     onSelectHandler: (index: number) => void;
     selectedIndex: number;
     type?: string;
 }
 
-const HomeTabBar = ({ selectedIndex, onSelectHandler, menus }: Props) => {
+const HomeTabBar = ({ selectedIndex, onSelectHandler, menus, iconName }: Props) => {
     
     // 각 탭의 고정 너비를 늘림
     const tabWidth = 120; 
@@ -42,7 +43,6 @@ const HomeTabBar = ({ selectedIndex, onSelectHandler, menus }: Props) => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={[
                     styles.scrollContent,
-                    // 전체 콘텐츠 너비를 강제로 화면보다 크게 만듦
                     { width: tabWidth * menus.length }
                 ]}
             >
@@ -63,6 +63,15 @@ const HomeTabBar = ({ selectedIndex, onSelectHandler, menus }: Props) => {
                             onSelectHandler(i);
                         }}
                     >
+                        {/* 아이콘이 존재하면 표시 */}
+                        {iconName && iconName[i] && (
+                            <Ionicons 
+                                name={iconName[i] as any} 
+                                size={20} 
+                                color={selectedIndex === i ? '#3B82F6' : '#6B7280'} 
+                                style={styles.tabIcon}
+                            />
+                        )}
                         <Text
                             style={[
                                 styles.tabText,
@@ -102,11 +111,17 @@ const styles = StyleSheet.create({
         borderBottomColor: '#3B82F6',
         bottom: 0,
     },
+    tabIcon: {
+        marginBottom: 4, // 아이콘과 텍스트 사이 간격
+    },
     tab: {
-        height: 50,
+        height: 40,
+        marginTop: 8,
         alignItems: 'center',
         justifyContent: 'center',
         paddingHorizontal: 8,
+        // 아이콘과 텍스트를 세로로 정렬하기 위해 flexDirection 추가
+        flexDirection: 'column',
     },
     tabText: {
         fontSize: 14,

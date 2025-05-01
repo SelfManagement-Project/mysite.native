@@ -1,12 +1,12 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
-const NoticeScreen = () => {    
+const AlertScreen = () => {    
   return (
     <ThemedView>
-      <ThemedText>Notice Screen</ThemedText>
+      <ThemedText>Alert Screen</ThemedText>
     </ThemedView>
   );
 }
 
-export default NoticeScreen;
+export default AlertScreen;

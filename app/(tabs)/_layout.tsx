@@ -17,6 +17,8 @@ export default function TabLayout() {
   const isAuthenticated = useSelector((state: any) => state.user?.isAuthenticated);
   const dispatch = useDispatch();
 
+  // console.log('isAuthenticated:', isAuthenticated);
+
   const handleLogout = async () => {
     Alert.alert('로그아웃', '정말 로그아웃 하시겠습니까?', [
       { text: '취소', style: 'cancel' },
@@ -24,11 +26,6 @@ export default function TabLayout() {
         text: '확인',
         onPress: async () => {
           try {
-            await AsyncStorage.removeItem('token');
-            // 토큰 삭제 확인
-            const removedToken = await AsyncStorage.getItem('token');
-            console.log('토큰 삭제 후:', removedToken); // null이어야 함
-            
             dispatch(logout());
             router.replace('/(tabs)');
           } catch (error) {
@@ -59,12 +56,12 @@ export default function TabLayout() {
       }}>
 
       <Tabs.Screen
-        name="AiTab"
+        name="aiTab"
         options={{
           title: 'AI',
           tabBarIcon: ({ color }) => (
             <View style={styles.tabIconContainer}>
-              <IconSymbol size={24} name="paperplane.fill" color={color} />
+              <IconSymbol size={24} name={"ai.fill" as any} color={color} />
             </View>
           ),
         }}
@@ -82,14 +79,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="LoginTab"
+        name="loginTab"
         options={{
-          title: isAuthenticated ? 'LogOut' : 'Login',
+          title: isAuthenticated ? 'Sign-Out' : 'Sign-In',
           tabBarIcon: ({ color }) => (
             <View style={styles.tabIconContainer}>
               <IconSymbol
                 size={24}
-                name={isAuthenticated ? "person.fill" : "lock.fill"}
+                name={isAuthenticated ? ("logout.fill" as any) : ("login.fill" as any)}
                 color={color}
               />
             </View>
