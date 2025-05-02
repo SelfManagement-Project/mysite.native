@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "mysite.app",
-    "slug": "mysite.app",
+    "slug": "mysiteapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -9,14 +9,27 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.mysite.app",
+      "config": {
+        "googleMapsApiKey": "AIzaSyCrTori9NreiPTgk381GrY6Pn43_cG9fes"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.mysite.app"
+      "package": "com.anonymous.mysite.app",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAuoG9-NYLZ0hxesA1iLNIbG3iNCN6OluE"
+        }
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +50,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "2c532904-0432-45a4-95ad-965744acaad1"
+      }
+    },
+    "owner": "yooyoungsu"
   }
 }
