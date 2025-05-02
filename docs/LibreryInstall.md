@@ -13,3 +13,4 @@ npx expo start 실행 명령어
 
 npm install react-native-maps
 npx expo install expo-location
+npx expo install react-native-webview
