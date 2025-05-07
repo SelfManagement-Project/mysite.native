@@ -1,5 +1,7 @@
 import React from 'react';
 import { ScrollView, Text, View, StyleSheet } from 'react-native';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { styles, darkStyles } from '@/screens/Home/homeTab/More/LearnMore/LearnMoreScreen.styles';
 
 const features = [
   {
@@ -17,44 +19,21 @@ const features = [
 ];
 
 const LearnMoreScreen = () => {
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'light' ? darkStyles : styles;
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>📝 더 알아보기</Text>
+    <ScrollView contentContainerStyle={theme.container}>
+      <Text style={theme.header}>📝 더 알아보기</Text>
       {features.map((feature, index) => (
-        <View key={index} style={styles.card}>
-          <Text style={styles.title}>{feature.title}</Text>
-          <Text style={styles.description}>{feature.description}</Text>
+        <View key={index} style={theme.card}>
+          <Text style={theme.title}>{feature.title}</Text>
+          <Text style={theme.description}>{feature.description}</Text>
         </View>
       ))}
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    backgroundColor: '#fff',
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  card: {
-    marginBottom: 16,
-    padding: 16,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  description: {
-    fontSize: 14,
-    color: '#555',
-  },
-});
+
 
 export default LearnMoreScreen;

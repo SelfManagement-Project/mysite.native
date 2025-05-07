@@ -1,8 +1,12 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useColorScheme } from 'react-native';
+import { styles, darkStyles } from '@/screens/Home/homeTab/More/MoreScreen.styles';
 
 const MoreScreen = () => {
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'light' ? darkStyles : styles;
   const router = useRouter();
 
   const menuItems = [
@@ -13,40 +17,21 @@ const MoreScreen = () => {
   ];
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>더 보기</Text>
+    <ScrollView contentContainerStyle={theme.container}>
+      <Text style={theme.title}>더 보기</Text>
       {menuItems.map((item) => (
         <TouchableOpacity
           key={item.screen}
-          style={styles.menuButton}
+          style={theme.menuButton}
           onPress={() => router.push((item.screen) as any)}
         >
-          <Text style={styles.menuText}>{item.title}</Text>
+          <Text style={theme.menuText}>{item.title}</Text>
         </TouchableOpacity>
       ))}
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 24,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  menuButton: {
-    padding: 16,
-    backgroundColor: '#f0f0f0',
-    marginBottom: 12,
-    borderRadius: 8,
-  },
-  menuText: {
-    fontSize: 16,
-  },
-});
+
 
 export default MoreScreen;

@@ -1,5 +1,7 @@
 import React from 'react';
 import { ScrollView, Text, View, StyleSheet } from 'react-native';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { styles, darkStyles } from '@/screens/Home/homeTab/More/Announcement/AnnouncementScreen.styles';
 
 const announcements = [
   {
@@ -17,51 +19,22 @@ const announcements = [
 ];
 
 const AnnouncementScreen = () => {
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'light' ? darkStyles : styles;
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>📢 공지사항</Text>
+    <ScrollView contentContainerStyle={theme.container}>
+      <Text style={theme.header}>📢 공지사항</Text>
       {announcements.map((item) => (
-        <View key={item.id} style={styles.card}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.content}>{item.content}</Text>
-          <Text style={styles.date}>{item.date}</Text>
+        <View key={item.id} style={theme.card}>
+          <Text style={theme.title}>{item.title}</Text>
+          <Text style={theme.content}>{item.content}</Text>
+          <Text style={theme.date}>{item.date}</Text>
         </View>
       ))}
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    backgroundColor: '#f0f0f0',
-  },
-  card: {
-    marginBottom: 16,
-    padding: 16,
-    backgroundColor: '#f2f2f2',
-    borderRadius: 8,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 6,
-  },
-  content: {
-    fontSize: 14,
-    color: '#333',
-    marginBottom: 6,
-  },
-  date: {
-    fontSize: 12,
-    color: '#888',
-    textAlign: 'right',
-  },
-});
+
 
 export default AnnouncementScreen;

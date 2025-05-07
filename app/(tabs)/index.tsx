@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import HomeParallaxScrollView from '@/components/HomeParallaxScrollView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -8,7 +8,7 @@ const HomeTab = () => {
   
   return (
     <SafeAreaView style={styles.container}>
-      <ParallaxScrollView />
+      <HomeParallaxScrollView />
     </SafeAreaView>
   );
 };

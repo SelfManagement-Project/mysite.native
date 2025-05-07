@@ -3,7 +3,7 @@ import { View, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-nati
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from './ThemedText';
-import Tabs from '@/components/ui/HomeTabBar';
+import Tabs from '@/components/ui/TabBar';
 import HomeScreen from '@/screens/Home/HomeScreen';
 import DashboardScreen from '@/screens/Home/homeTab/DashBoard/DashboardScreen';
 import ScheduleScreen from '@/screens/Home/homeTab/Schedule/ScheduleScreen';
@@ -11,12 +11,13 @@ import HabitScreen from '@/screens/Home/homeTab/Schedule/HabitScreen';
 import HealthScreen from '@/screens/Home/homeTab/Health/HealthScreen';
 import FinanceScreen from '@/screens/Home/homeTab/Finance/FinanceScreen';
 import LocationScreen from '@/screens/Home/homeTab/Location/LocationScreen';
-import NoticeScreen from '@/screens/Home/homeTab/Alert/AlertScreen';
+import AlarmScreen from '@/screens/Home/homeTab/Alarm/AlarmScreen';
 import MoreScreen from '@/screens/Home/homeTab/More/MoreScreen';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'expo-router';
+import SearchBar from './ui/SearchBar';
 
-const ParallaxScrollView = () => {
+const HomeParallaxScrollView = () => {
   const [tab, setTab] = useState(0);
   const isAuthenticated = useSelector((state: any) => state.user?.isAuthenticated);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -25,6 +26,10 @@ const ParallaxScrollView = () => {
   const handleSearch = async () => {
     console.log('검색 버튼 클릭');
     router.push('/(router)/searchResult');
+  };
+  const handleAlert = async () => {
+    console.log('알림 버튼 클릭');
+    router.push('/(router)/alert');
   };
 
   // 로컬 상태와 Redux 상태를 동기화
@@ -56,7 +61,7 @@ const ParallaxScrollView = () => {
       case 1: return <DashboardScreen />;
       case 2: return <ScheduleScreen />;
       case 3: return <HabitScreen />;
-      case 4: return <NoticeScreen />;
+      case 4: return <AlarmScreen />;
       case 5: return <HealthScreen />;
       case 6: return <FinanceScreen />;
       case 7: return <LocationScreen />;
@@ -70,24 +75,7 @@ const ParallaxScrollView = () => {
       <View style={styles.header}>
         {isLoggedIn ? (
           <>
-            <View style={styles.searchContainer}>
-              <Image
-                source={require('@/assets/images/OneFlowLogo.webp')} // 이미지 경로를 실제 이미지 파일 경로로 변경해주세요
-                style={styles.buttonImage}
-                resizeMode="contain"
-              />
-              <View style={styles.searchInputContainer}>
-
-                <TextInput
-                  style={styles.searchInput}
-                  placeholder="검색어를 입력하세요"
-                  placeholderTextColor="#9CA3AF"
-                />
-              </View>
-              <TouchableOpacity style={styles.searchButton} onPress={() => {handleSearch()}}>
-                <ThemedText style={styles.searchButtonText}>검색</ThemedText>
-              </TouchableOpacity>
-            </View>
+            <SearchBar />
           </>
         ) : (
           <View style={styles.searchContainer}>
@@ -103,7 +91,7 @@ const ParallaxScrollView = () => {
       {isLoggedIn ? (
         <>
           <Tabs
-            menus={['Home', 'Dashboard', 'Schedule', 'Habit', 'Alert', 'Health', 'Finance', 'Loacation', 'Moere']}
+            menus={['Home', 'Dashboard', 'Schedule', 'Habit', 'Alarm', 'Health', 'Finance', 'Loacation', 'Moere']}
             iconName={['home', 'dashboard', 'calendar', 'check-square-o', 'bell', 'heartbeat', 'money', 'location-arrow', 'th-list']}
             onSelectHandler={(index: number) => {
               setTab(index);
@@ -174,6 +162,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     letterSpacing: 0.5,
   },
+
+
+  alertButton: {
+    backgroundColor: '#fff',
+    height: 44,
+    paddingHorizontal: 15,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+    marginLeft: 10,
+  },
+  alertButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
+    letterSpacing: 0.5,
+  },
+
+
+
+
+
   contentContainer: {
     flex: 1,
   },
@@ -183,4 +198,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ParallaxScrollView;
+export default HomeParallaxScrollView;

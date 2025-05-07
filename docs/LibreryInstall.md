@@ -14,3 +14,9 @@ npx expo start 실행 명령어
 npm install react-native-maps
 npx expo install expo-location
 npx expo install react-native-webview
+
+npm install react-native-calendars
+
+npx pod-install
+npm install react-native-vision-camera
+expo install expo-camera

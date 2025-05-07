@@ -9,6 +9,7 @@ type ChatMessage = {
 const useChat = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
   const sendMessage = () => {
@@ -34,6 +35,7 @@ const useChat = () => {
     setInput,
     sendMessage,
     flatListRef,
+    isLoading
   };
 };
 

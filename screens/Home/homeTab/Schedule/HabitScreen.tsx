@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { styles, darkStyles } from '@/screens/Home/homeTab/Schedule/HabitScreen.styles';
 import HabitHubBar from '@/components/Home/homeTab/Schedule/HabitHubBar';
+import { useColorScheme } from 'react-native';
 
 interface HabitData {
   habitId: number;
@@ -10,10 +12,12 @@ interface HabitData {
 }
 
 const HabitScreen = () => {
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'light' ? darkStyles : styles;
   // 타입을 명확하게 지정
   const [isLoading, setIsLoading] = useState(true);
   const [habits, setHabits] = useState<HabitData[]>([]);
-  
+
   // 임시 데이터 (추후 API에서 가져올 데이터)
   const mockHabits: HabitData[] = [
     { habitId: 1, name: '운동하기', completed: 70, remaining: 30 },
@@ -55,75 +59,75 @@ const HabitScreen = () => {
 
   if (isLoading) {
     return (
-      <View style={[styles.container, styles.loadingContainer]}>
+      <View style={[theme.container, theme.loadingContainer]}>
         <ActivityIndicator size="large" color="#5c6bc0" />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>습관 관리</Text>
-        <View style={styles.buttons}>
-          <TouchableOpacity style={styles.btn}>
-            <Text style={styles.btnText}>기간선택</Text>
+    <ScrollView style={theme.container}>
+      <View style={theme.header}>
+        <Text style={theme.title}>습관 관리</Text>
+        <View style={theme.buttons}>
+          <TouchableOpacity style={theme.btn}>
+            <Text style={theme.btnText}>기간선택</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btn} onPress={() => openModal('add')}>
-            <Text style={styles.btnText}>추가하기</Text>
+          <TouchableOpacity style={theme.btn} onPress={() => openModal('add')}>
+            <Text style={theme.btnText}>추가하기</Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      <View style={styles.chartContainer}>
-        <Text style={styles.sectionTitle}>습관</Text>
+      <View style={theme.chartContainer}>
+        <Text style={theme.sectionTitle}>습관</Text>
         {habits.length > 0 ? (
           <HabitHubBar data={habits} />
         ) : (
-          <Text style={styles.noDataText}>습관 데이터가 없습니다.</Text>
+          <Text style={theme.noDataText}>습관 데이터가 없습니다.</Text>
         )}
       </View>
 
-      <View style={styles.todayHabits}>
-        <Text style={styles.sectionTitle}>오늘의 습관</Text>
+      <View style={theme.todayHabits}>
+        <Text style={theme.sectionTitle}>오늘의 습관</Text>
         {todayHabits.map(habit => (
-          <View key={habit.habitId} style={styles.habitItem}>
-            <View style={styles.habitHeader}>
-              <Text style={styles.habitName}>{habit.name}</Text>
-              <View style={[styles.checkbox, habit.isCompleted && styles.checkedBox]} />
+          <View key={habit.habitId} style={theme.habitItem}>
+            <View style={theme.habitHeader}>
+              <Text style={theme.habitName}>{habit.name}</Text>
+              <View style={[theme.checkbox, habit.isCompleted && theme.checkedBox]} />
             </View>
-            <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: `${habit.completed}%` }]} />
+            <View style={theme.progressBar}>
+              <View style={[theme.progressFill, { width: `${habit.completed}%` }]} />
             </View>
-            <Text style={styles.progressText}>{habit.completed}% 달성</Text>
-            <View style={styles.habitDetails}>
-              <Text style={styles.habitDetailText}>
-                <Text style={styles.label}>설명:</Text> {habit.description}
+            <Text style={theme.progressText}>{habit.completed}% 달성</Text>
+            <View style={theme.habitDetails}>
+              <Text style={theme.habitDetailText}>
+                <Text style={theme.label}>설명:</Text> {habit.description}
               </Text>
-              <Text style={styles.habitDetailText}>
-                <Text style={styles.label}>목표 완료 일 수:</Text> {habit.goalCount}
+              <Text style={theme.habitDetailText}>
+                <Text style={theme.label}>목표 완료 일 수:</Text> {habit.goalCount}
               </Text>
-              <Text style={styles.habitDetailText}>
-                <Text style={styles.label}>달성 일 수:</Text> 2
+              <Text style={theme.habitDetailText}>
+                <Text style={theme.label}>달성 일 수:</Text> 2
               </Text>
             </View>
           </View>
         ))}
       </View>
 
-      <View style={styles.reportButtons}>
-        <TouchableOpacity 
-          style={styles.reportBtn}
+      <View style={theme.reportButtons}>
+        <TouchableOpacity
+          style={theme.reportBtn}
           onPress={() => openModal('report')}
         >
-          <Text style={styles.reportBtnText}>주간/월간 리포트 보기</Text>
+          <Text style={theme.reportBtnText}>주간/월간 리포트 보기</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.reportBtn}
+
+        <TouchableOpacity
+          style={theme.reportBtn}
           onPress={() => openModal('goal')}
         >
-          <Text style={styles.reportBtnText}>목표 설정</Text>
+          <Text style={theme.reportBtnText}>목표 설정</Text>
         </TouchableOpacity>
       </View>
 
@@ -132,137 +136,6 @@ const HabitScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f4f6fc',
-  },
-  loadingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  noDataText: {
-    textAlign: 'center',
-    color: '#666',
-    padding: 20,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  buttons: {
-    flexDirection: 'row',
-  },
-  btn: {
-    backgroundColor: '#5c6bc0',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 5,
-    marginLeft: 8,
-  },
-  btnText: {
-    color: 'white',
-    fontWeight: '500',
-  },
-  chartContainer: {
-    backgroundColor: 'white',
-    margin: 15,
-    borderRadius: 10,
-    padding: 15,
-    elevation: 2,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
-  },
-  todayHabits: {
-    backgroundColor: 'white',
-    margin: 15,
-    borderRadius: 10,
-    padding: 15,
-    elevation: 2,
-  },
-  habitItem: {
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 10,
-  },
-  habitHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  habitName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: '#5c6bc0',
-  },
-  checkedBox: {
-    backgroundColor: '#5c6bc0',
-  },
-  progressBar: {
-    height: 10,
-    backgroundColor: '#e2e8f0',
-    borderRadius: 5,
-    marginBottom: 5,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#4a90e2',
-  },
-  progressText: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 10,
-  },
-  habitDetails: {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    borderRadius: 4,
-  },
-  habitDetailText: {
-    fontSize: 14,
-    marginBottom: 3,
-  },
-  label: {
-    fontWeight: 'bold',
-  },
-  reportButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    margin: 15,
-    marginBottom: 30,
-  },
-  reportBtn: {
-    backgroundColor: '#5c6bc0',
-    padding: 12,
-    borderRadius: 6,
-    flex: 1,
-    marginHorizontal: 5,
-    alignItems: 'center',
-  },
-  reportBtnText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-});
+
 
 export default HabitScreen;

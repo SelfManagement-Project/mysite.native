@@ -8,8 +8,13 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { styles, darkStyles } from '@/screens/Home/homeTab/More/AuthUpdate/AuthUpdateScreen.styles'; 
 
 const AuthUpdateScreen = () => {
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'light' ? darkStyles : styles;
+
   const [name, setName] = useState('홍길동');
   const [email, setEmail] = useState('hong@example.com');
   const [password, setPassword] = useState('');
@@ -20,77 +25,42 @@ const AuthUpdateScreen = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>👤 회원 정보 수정</Text>
+    <ScrollView contentContainerStyle={theme.container}>
+      <Text style={theme.header}>👤 회원 정보 수정</Text>
 
-      <Text style={styles.label}>이름</Text>
+      <Text style={theme.label}>이름</Text>
       <TextInput
-        style={styles.input}
+        style={theme.input}
         value={name}
         onChangeText={setName}
         placeholder="이름을 입력하세요"
       />
 
-      <Text style={styles.label}>이메일</Text>
+      <Text style={theme.label}>이메일</Text>
       <TextInput
-        style={styles.input}
+        style={theme.input}
         value={email}
         onChangeText={setEmail}
         placeholder="이메일을 입력하세요"
         keyboardType="email-address"
       />
 
-      <Text style={styles.label}>비밀번호 변경</Text>
+      <Text style={theme.label}>비밀번호 변경</Text>
       <TextInput
-        style={styles.input}
+        style={theme.input}
         value={password}
         onChangeText={setPassword}
         placeholder="새 비밀번호 입력"
         secureTextEntry
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleUpdate}>
-        <Text style={styles.buttonText}>정보 수정하기</Text>
+      <TouchableOpacity style={theme.button} onPress={handleUpdate}>
+        <Text style={theme.buttonText}>정보 수정하기</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  header: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 24,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 6,
-    marginTop: 14,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 14,
-  },
-  button: {
-    backgroundColor: '#4078f5',
-    paddingVertical: 14,
-    borderRadius: 8,
-    marginTop: 32,
-  },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-});
+
 
 export default AuthUpdateScreen;

@@ -1,5 +1,8 @@
 import React from 'react';
-import { ScrollView, Text, View, StyleSheet } from 'react-native';
+import { ScrollView, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { styles, darkStyles } from '@/screens/Search/SearchResultScreen.styles';
+import { ThemedText } from '@/components/ThemedText';
 
 const announcements = [
   {
@@ -17,51 +20,46 @@ const announcements = [
 ];
 
 const SearchResultScreen = () => {
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'light' ? darkStyles : styles;
+
+  const handleSearch = async () => {
+    console.log('검색 버튼 클릭');
+  };
+  
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>📢 검색 결과</Text>
+    <ScrollView contentContainerStyle={theme.container}>
+
+
+
+      <View style={theme.searchContainer}>
+        <View style={theme.searchInputContainer}>
+          <TextInput
+            style={theme.searchInput}
+            placeholder="검색어를 입력하세요"
+            placeholderTextColor="#9CA3AF"
+          />
+        </View>
+        <TouchableOpacity style={theme.searchButton} onPress={() => { handleSearch() }}>
+          <ThemedText style={theme.searchButtonText}>검색</ThemedText>
+        </TouchableOpacity>
+      </View>
+
+
+
+
+      <Text style={theme.header}>📢 검색 결과</Text>
       {announcements.map((item) => (
-        <View key={item.id} style={styles.card}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.content}>{item.content}</Text>
-          <Text style={styles.date}>{item.date}</Text>
+        <View key={item.id} style={theme.card}>
+          <Text style={theme.title}>{item.title}</Text>
+          <Text style={theme.content}>{item.content}</Text>
+          <Text style={theme.date}>{item.date}</Text>
         </View>
       ))}
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    backgroundColor: '#f0f0f0',
-  },
-  card: {
-    marginBottom: 16,
-    padding: 16,
-    backgroundColor: '#f2f2f2',
-    borderRadius: 8,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 6,
-  },
-  content: {
-    fontSize: 14,
-    color: '#333',
-    marginBottom: 6,
-  },
-  date: {
-    fontSize: 12,
-    color: '#888',
-    textAlign: 'right',
-  },
-});
+
 
 export default SearchResultScreen;
