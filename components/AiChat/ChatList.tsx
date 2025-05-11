@@ -2,7 +2,13 @@ import React, { forwardRef } from 'react';
 import { FlatList, View } from 'react-native';
 import ChatBubble from '@/components/AiChat/ChatBubble';
 
-const ChatList = forwardRef(({ messages }: { messages: { sender: 'user' | 'ai'; text: string }[] }, ref: any) => {
+interface ChatListProps {
+  messages: { sender: 'user' | 'ai'; text: string }[];
+}
+
+type ChatListRef = FlatList | null;
+
+const ChatList = forwardRef<ChatListRef, ChatListProps>(({ messages }, ref) => {
   return (
     <FlatList
       ref={ref}

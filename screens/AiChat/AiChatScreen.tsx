@@ -1,6 +1,7 @@
+// screens/AiChat/AiChatScreen.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator, SafeAreaView } from 'react-native';
-import { styles } from '@/screens/AiChat/AiChatScreen.styles';
+import { View, Text, ActivityIndicator, SafeAreaView, TouchableOpacity } from 'react-native';
+import { styles } from './AiChatScreen.styles';
 import ChatList from '@/components/AiChat/ChatList';
 import ChatInput from '@/components/AiChat/ChatInput';
 import useChat from '@/hooks/AiChat/useChat';
@@ -16,7 +17,17 @@ interface AiChatScreenProps {
 }
 
 const AiChatScreen: React.FC<AiChatScreenProps> = ({ sessionId, title }) => {
-  const { messages, input, setInput, sendMessage, flatListRef, isLoading } = useChat();
+  const { 
+    messages, 
+    input, 
+    setInput, 
+    sendMessage, 
+    flatListRef, 
+    isLoading, 
+    canSendMessage,
+    handleNewChat 
+  } = useChat(sessionId);
+  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const isAuthenticated = useSelector((state: any) => state.user?.isAuthenticated);
 
@@ -28,18 +39,6 @@ const AiChatScreen: React.FC<AiChatScreenProps> = ({ sessionId, title }) => {
       }, 100);
     }
   }, [messages]);
-
-  useEffect(() => {
-    if (sessionId) {
-      // sessionId가 있으면 해당 대화 내용 불러오기
-      console.log('대화 불러오기:', sessionId, title);
-      // 여기서 데이터를 로드하는 함수를 호출...
-    } else {
-      // 새 대화 시작
-      console.log('새 대화 시작');
-      // 필요한 초기화 로직...
-    }
-  }, [sessionId, title]);
 
   // 로컬 상태와 Redux 상태를 동기화
   useEffect(() => {
@@ -68,7 +67,7 @@ const AiChatScreen: React.FC<AiChatScreenProps> = ({ sessionId, title }) => {
     }, [])
   );
 
-  if (isLoading) {
+  if (isLoading && messages.length === 0) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#4F6BFF" />
@@ -82,14 +81,19 @@ const AiChatScreen: React.FC<AiChatScreenProps> = ({ sessionId, title }) => {
       {/* 채팅 헤더 */}
       <View style={styles.chatHeader}>
         <Text style={styles.chatTitle}>{title ? title : '새 대화'}</Text>
+        <TouchableOpacity 
+          style={styles.newChatButton} 
+          onPress={handleNewChat}
+        >
+          <Ionicons name="add-circle-outline" size={24} color="#4F6BFF" />
+        </TouchableOpacity>
       </View>
 
-      {/* 세션 정보 (존재하는 대화인 경우에만 표시) */}
-      {sessionId && title && (
-        <View style={styles.sessionInfo}>
-          <Text style={styles.sessionTitle}>{title}</Text>
-          <Text style={styles.sessionMeta}>
-            대화 ID: {sessionId.substring(0, 8)}... • 메시지 {messages.length}개
+      {/* 연결 상태 표시 */}
+      {!canSendMessage && (
+        <View style={styles.connectionStatus}>
+          <Text style={styles.connectionStatusText}>
+            <Ionicons name="alert-circle" size={16} color="#FF6B6B" /> 서버에 연결 중...
           </Text>
         </View>
       )}
@@ -122,7 +126,8 @@ const AiChatScreen: React.FC<AiChatScreenProps> = ({ sessionId, title }) => {
             setTimeout(() => {
               flatListRef.current?.scrollToEnd({ animated: true });
             }, 100);
-          }} 
+          }}
+          isDisabled={!canSendMessage || isLoading}
         />
       </View>
     </SafeAreaView>

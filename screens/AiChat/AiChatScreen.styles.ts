@@ -1,3 +1,4 @@
+// screens/AiChat/AiChatScreen.styles.ts
 import { StyleSheet, Platform } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -91,5 +92,20 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
+  },
+  // 새로 추가된 스타일
+  newChatButton: {
+    padding: 8,
+  },
+  connectionStatus: {
+    backgroundColor: '#FFF3F3',
+    padding: 8,
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#FFDBDB',
+  },
+  connectionStatusText: {
+    color: '#FF6B6B',
+    fontSize: 14,
   },
 });
