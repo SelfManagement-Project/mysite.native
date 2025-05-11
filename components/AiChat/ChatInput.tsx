@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TextInput, TouchableOpacity, Text } from 'react-native';
+import { ThemedText } from '../ThemedText';
 
 const ChatInput = ({
   input,
@@ -14,11 +15,24 @@ const ChatInput = ({
     <View style={{
       flexDirection: 'row',
       alignItems: 'center',
-      borderTopWidth: 1,
-      borderTopColor: '#ddd',
+      borderWidth: 1,
+      borderColor: '#ddd',
       paddingVertical: 10,
       paddingHorizontal: 8,
     }}>
+      <TouchableOpacity onPress={onSend}>
+        <Text style={{
+          color: '#5c6bc0',
+          fontWeight: 'bold',
+          borderRadius: 20,
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          borderWidth: 1,
+        }}>
+          📷
+        </Text>
+      </TouchableOpacity>
+
       <TextInput
         value={input}
         onChangeText={setInput}
@@ -30,10 +44,21 @@ const ChatInput = ({
           paddingHorizontal: 16,
           paddingVertical: 8,
           marginRight: 8,
+          marginLeft: 8,
+          borderWidth: 1,
         }}
       />
       <TouchableOpacity onPress={onSend}>
-        <Text style={{ color: '#5c6bc0', fontWeight: 'bold' }}>전송</Text>
+        <Text style={{
+          color: '#5c6bc0',
+          fontWeight: 'bold',
+          borderRadius: 20,
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          borderWidth: 1,
+        }}>
+          전송
+        </Text>
       </TouchableOpacity>
     </View>
   );

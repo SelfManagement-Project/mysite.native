@@ -1,6 +1,6 @@
 // redux/store.ts
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from '@/redux/reducers/Auth/userReducer';
+import userReducer from '@/redux/reducers/Auth/authReducer';
 import urlReducer from '@/redux/urlSlice';
 
 export const store = configureStore({

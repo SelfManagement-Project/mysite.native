@@ -1,5 +1,5 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs, useFocusEffect } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import { Platform, View, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 import { HapticTab } from '@/components/HapticTab';
@@ -8,16 +8,51 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { logout } from '@/redux/reducers/Auth/userReducer';
+import { logout } from '@/redux/action/Auth/authActions';
 import { useDispatch } from 'react-redux';
 import { router } from 'expo-router';
+import { AppDispatch } from '@/redux/store';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const isAuthenticated = useSelector((state: any) => state.user?.isAuthenticated);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  // Redux 상태 가져오기
+  const reduxIsAuthenticated = useSelector((state: any) => state.user?.isAuthenticated);
+  // 토큰 기반 로그인 상태
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // console.log('isAuthenticated:', isAuthenticated);
+
+  // 컴포넌트 마운트 시 토큰 확인
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        console.log('토큰 확인:', token);
+        setIsAuthenticated(!!token);
+      } catch (error) {
+        console.error('토큰 확인 오류:', error);
+        setIsAuthenticated(false);
+      }
+    };
+
+    checkToken();
+  }, [reduxIsAuthenticated]); // Redux 상태가 변경될 때마다 토큰도 확인
+
+  // 포커스될 때마다 토큰 확인 (화면 전환 후 돌아올 때)
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkToken = async () => {
+        try {
+          const token = await AsyncStorage.getItem('token');
+          setIsAuthenticated(!!token);
+        } catch (error) {
+          console.error('토큰 확인 오류:', error);
+        }
+      };
+
+      checkToken();
+    }, [])
+  );
 
   const handleLogout = async () => {
     Alert.alert('로그아웃', '정말 로그아웃 하시겠습니까?', [
@@ -26,7 +61,10 @@ export default function TabLayout() {
         text: '확인',
         onPress: async () => {
           try {
-            dispatch(logout());
+            // console.log('로그아웃 시도');
+            await dispatch(logout());
+            // console.log('로그아웃 성공');
+            setIsAuthenticated(false);
             router.replace('/(tabs)');
           } catch (error) {
             console.error('로그아웃 오류:', error);
@@ -72,7 +110,7 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ color }) => (
             <View style={styles.centerButtonContainer}>
-              <IconSymbol size={28} name="house.fill" color="white" />
+              <IconSymbol size={28} name="house.fill" color={ color } />
             </View>
           ),
           tabBarLabel: () => null,

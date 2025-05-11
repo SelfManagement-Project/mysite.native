@@ -12,7 +12,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 const HomeScreen = () => {
   const colorScheme = useColorScheme();
-  const theme = colorScheme === 'dark' ? darkStyles : styles;
+  const theme = colorScheme === 'light' ? darkStyles : styles;
   const [slideIndex, setSlideIndex] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const isAuthenticated = useSelector((state: any) => state.user?.isAuthenticated);

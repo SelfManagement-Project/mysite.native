@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, StatusBar } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // 대화 내역 타입 정의
 type ChatSession = {
@@ -18,7 +19,31 @@ interface AiChatListScreenProps {
 }
 
 const AiChatListScreen: React.FC<AiChatListScreenProps> = ({ onSelectChat, onNewChat }) => {
-  const router = useRouter();
+
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const router = useRouter();
+  // 컴포넌트 마운트 시 토큰 확인
+  // useEffect(() => {
+  //   const checkToken = async () => {
+  //     try {
+  //       const token = await AsyncStorage.getItem('token');
+  //       console.log('토큰 확인:', token);
+  //       setIsLoggedIn(!!token); // 토큰이 있으면 true, 없으면 false
+
+  //       if(isLoggedIn === false) {
+  //         // 로그인 상태가 아닐 경우 로그인 화면으로 리다이렉트
+  //         router.push('/(tabs)/loginTab');    
+  //       }
+  //     } catch (error) {
+  //       console.error('토큰 확인 중 오류:', error);
+  //       setIsLoggedIn(false);
+  //     }
+  //   };
+
+  //   checkToken();
+  // }, []); // 컴포넌트 마운트 시 한 번만 실행
+
+  
 
   // 샘플 AI 대화 히스토리 데이터
   const chatSessions: ChatSession[] = [

@@ -6,7 +6,27 @@ import {
     loginSuccess,
     loginFailure,
     logout as logoutAction
-} from '@/redux/reducers/Auth/userReducer';
+} from '@/redux/reducers/Auth/authReducer';
+
+export const initializeAuth = createAsyncThunk(
+    'auth/initialize',
+    async (_, { dispatch }) => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const userRaw = await AsyncStorage.getItem('user');
+
+            if (token && userRaw) {
+                const user = JSON.parse(userRaw);
+                dispatch(loginSuccess(user)); // Redux 상태 복구
+            } else {
+                dispatch(logoutAction()); // 상태 초기화
+            }
+        } catch (error) {
+            console.error('초기 로그인 상태 복원 실패:', error);
+            dispatch(logoutAction());
+        }
+    }
+);
 
 export const login = createAsyncThunk(
     'auth/login',

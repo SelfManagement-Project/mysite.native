@@ -28,6 +28,9 @@ const MoreScreen = () => {
           <Text style={theme.menuText}>{item.title}</Text>
         </TouchableOpacity>
       ))}
+      <TouchableOpacity style={theme.menuButton}>
+          <Text style={theme.menuText}>👤 회원탈퇴</Text>
+        </TouchableOpacity>
     </ScrollView>
   );
 };

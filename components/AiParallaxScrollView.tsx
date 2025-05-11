@@ -1,15 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
-import { ThemedText } from './ThemedText';
+import { View, StyleSheet, Image } from 'react-native';
 import Tabs from '@/components/ui/TabBar';
 import { useSelector } from 'react-redux';
-import { useRouter } from 'expo-router';
 import AiChatScreen from '@/screens/AiChat/AiChatScreen';
 import AiChatListScreen from '@/screens/AiChat/AiChatListScreen';
 import SearchBar from './ui/SearchBar';
 import TextCapture from '@/screens/AiChat/TextCapture';
 
-const AiParallaxScrollView: React.FC = () => {
+const AiParallaxScrollView = () => {
   const [tab, setTab] = useState<number>(0);
   const [previousTab, setPreviousTab] = useState<number>(0);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);

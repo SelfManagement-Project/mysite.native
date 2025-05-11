@@ -1,14 +1,9 @@
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { login } from '@/redux/action/Auth/authActions';
 import { AppDispatch } from '@/redux/store';
-import { RootStackParamList } from '@/types/Auth/navigation';
 import { router, useLocalSearchParams } from 'expo-router';
-
-type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 const useLoginForm = () => {
   const [email, setEmail] = useState('');
