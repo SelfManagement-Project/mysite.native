@@ -21,3 +21,5 @@ npm install react-native-calendars
 npx pod-install
 npm install react-native-vision-camera
 expo install expo-camera
+
+npm install react-native-device-info

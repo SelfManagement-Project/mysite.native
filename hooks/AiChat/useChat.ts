@@ -1,9 +1,10 @@
 // hooks/AiChat/useChat.tsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import DeviceInfo from 'react-native-device-info';
 
 type ChatMessage = {
   sender: 'user' | 'ai';
@@ -21,11 +22,41 @@ const useChat = (sessionId?: string | null) => {
   const typingInterval = useRef<NodeJS.Timeout | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [deviceId, setDeviceId] = useState<string | null>(null);
 
   // Redux에서 URL 가져오기
   const baseWsUrl = useSelector((state: any) =>
     state.url.PythonbaseUrl.replace('http', 'ws')
   );
+
+  // 디바이스 ID 가져오기
+  const getDeviceId = useCallback(async () => {
+    try {
+      // 저장된 디바이스 ID 확인
+      let storedDeviceId = await AsyncStorage.getItem('device_id');
+      
+      // 없으면 DeviceInfo로 새로 생성
+      if (!storedDeviceId) {
+        // UniqueId는 비동기 함수
+        const uniqueId = await DeviceInfo.getUniqueId();
+        const deviceType = Platform.OS; // 'ios' 또는 'android'
+        storedDeviceId = `mobile_${deviceType}_${uniqueId}`;
+        
+        // 디바이스 ID 저장
+        await AsyncStorage.setItem('device_id', storedDeviceId);
+      }
+      
+      console.log('디바이스 ID:', storedDeviceId);
+      setDeviceId(storedDeviceId);
+      return storedDeviceId;
+    } catch (error) {
+      console.error('디바이스 ID 생성 중 오류:', error);
+      // 폴백 ID 생성
+      const fallbackId = `mobile_${Platform.OS}_${Date.now()}`;
+      setDeviceId(fallbackId);
+      return fallbackId;
+    }
+  }, []);
 
   const checkAuth = async () => {
     try {
@@ -33,10 +64,10 @@ const useChat = (sessionId?: string | null) => {
       if (userString) {
         const userData = JSON.parse(userString);
         console.log('유저 ID:', userData.userId);
-        // 또는 다른 변수에 할당하여 사용
-        // const userId = userData.userId;
-        // console.log('유저 ID:', userId);
         setUserId(userData.userId);
+        
+        // 디바이스 ID도 함께 가져오기
+        await getDeviceId();
       } else {
         console.log('저장된 유저 정보가 없습니다.');
       }
@@ -84,14 +115,17 @@ const useChat = (sessionId?: string | null) => {
     }
 
     const token = await AsyncStorage.getItem('token');
+    
+    // 디바이스 ID가 없으면 가져오기
+    const currentDeviceId = deviceId || await getDeviceId();
 
     if (!token || !userId) {
       console.error('토큰 또는 사용자 ID가 없습니다.');
       return;
     }
 
-    // 웹소켓 연결 설정
-    const wsUrl = `${baseWsUrl}/api/chat/ws/chat/${userId}/${chatId}`;
+    // 웹소켓 연결 설정 (디바이스 ID 추가)
+    const wsUrl = `${baseWsUrl}/api/chat/ws/chat/${userId}/${chatId}/${currentDeviceId}`;
     console.log('웹소켓 연결 시도:', wsUrl);
 
     try {
@@ -116,7 +150,7 @@ const useChat = (sessionId?: string | null) => {
     } catch (error) {
       console.error('웹소켓 연결 실패:', error);
     }
-  }, [baseWsUrl, userId, handleWebSocketMessage]);
+  }, [baseWsUrl, userId, deviceId, handleWebSocketMessage, getDeviceId]);
 
   // 메시지 전송
   const sendMessage = useCallback(() => {
@@ -132,9 +166,12 @@ const useChat = (sessionId?: string | null) => {
     setIsLoading(true);
     setInput('');
 
-    // 웹소켓으로 메시지 전송
-    ws.current.send(JSON.stringify({ message: input }));
-  }, [input, canSendMessage, isLoading, isTyping]);
+    // 웹소켓으로 메시지 전송 (디바이스 ID 포함)
+    ws.current.send(JSON.stringify({ 
+      message: input,
+      device_id: deviceId
+    }));
+  }, [input, canSendMessage, isLoading, isTyping, deviceId]);
 
   // 새 대화 시작 함수를 useCallback으로 래핑
   const handleNewChat = useCallback(() => {
@@ -149,16 +186,16 @@ const useChat = (sessionId?: string | null) => {
   // 화면 포커스 효과 추가 - 화면이 포커스를 얻거나 잃을 때 웹소켓 연결 관리
   useFocusEffect(
     React.useCallback(() => {
-
       // 비동기 함수로 실행 순서 보장
       const initConnection = async () => {
-        // 1. 먼저 사용자 ID 가져오기
+        // 1. 먼저 사용자 ID와 디바이스 ID 가져오기
         await checkAuth();
 
         // 2. 사용자 ID가 있으면 웹소켓 연결
         if (userId) {
           console.log('화면 포커스 얻음 - 웹소켓 연결 시도');
-          console.log(userId);
+          console.log('사용자 ID:', userId);
+          console.log('디바이스 ID:', deviceId);
           const chat_id = sessionId ?? Date.now().toString();
           initWebSocket(chat_id);
         } else {
@@ -181,11 +218,13 @@ const useChat = (sessionId?: string | null) => {
         }
         setCanSendMessage(false);
       };
-    }, [sessionId, initWebSocket, userId])
+    }, [sessionId, initWebSocket, userId, deviceId])
   );
 
-  // 컴포넌트 언마운트 시 정리 작업
+  // 컴포넌트 마운트 시 디바이스 ID 초기화, 언마운트 시 정리 작업
   useEffect(() => {
+    // 첫 마운트 시 디바이스 ID 가져오기
+    getDeviceId();
 
     return () => {
       console.log('컴포넌트 언마운트 - 모든 리소스 정리');
@@ -199,7 +238,7 @@ const useChat = (sessionId?: string | null) => {
         ws.current = null;
       }
     };
-  }, []);
+  }, [getDeviceId]);
 
   return {
     messages,
