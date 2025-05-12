@@ -7,8 +7,8 @@ interface UrlState {
 
 const initialState: UrlState = {
   // AppUrl: __DEV__ ? 'http://192.168.219.178:9000' : 'http://3.35.170.116',  // 개발용/서버용
-  AppUrl: 'http://192.168.219.225:9000',  // 개발용/서버용
-  PythonbaseUrl: 'http://192.168.219.225:8000',
+  AppUrl: 'http://192.168.0.13:9000',  // 개발용/서버용
+  PythonbaseUrl: 'http://192.168.0.13:8000',
 };
 
 const urlSlice = createSlice({

@@ -20,12 +20,30 @@ const useChat = (sessionId?: string | null) => {
   const ws = useRef<WebSocket | null>(null);
   const typingInterval = useRef<NodeJS.Timeout | null>(null);
   const [isTyping, setIsTyping] = useState(false);
-  
+  const [userId, setUserId] = useState(null);
+
   // Redux에서 URL 가져오기
-  const baseWsUrl = useSelector((state: any) => 
+  const baseWsUrl = useSelector((state: any) =>
     state.url.PythonbaseUrl.replace('http', 'ws')
   );
-  const userId = 1;
+
+  const checkAuth = async () => {
+    try {
+      const userString = await AsyncStorage.getItem('user');
+      if (userString) {
+        const userData = JSON.parse(userString);
+        console.log('유저 ID:', userData.userId);
+        // 또는 다른 변수에 할당하여 사용
+        // const userId = userData.userId;
+        // console.log('유저 ID:', userId);
+        setUserId(userData.userId);
+      } else {
+        console.log('저장된 유저 정보가 없습니다.');
+      }
+    } catch (error) {
+      console.error('유저 정보 파싱 중 오류 발생:', error);
+    }
+  };
 
   // 웹소켓 메시지 처리 함수를 useCallback으로 래핑
   const handleWebSocketMessage = useCallback((event: WebSocketMessageEvent) => {
@@ -48,7 +66,7 @@ const useChat = (sessionId?: string | null) => {
         updatedMessages[lastIndex].text = aiContent.slice(0, charIndex);
         return updatedMessages;
       });
-      
+
       charIndex += 1;
 
       if (charIndex > aiContent.length) {
@@ -66,7 +84,7 @@ const useChat = (sessionId?: string | null) => {
     }
 
     const token = await AsyncStorage.getItem('token');
-    
+
     if (!token || !userId) {
       console.error('토큰 또는 사용자 ID가 없습니다.');
       return;
@@ -75,7 +93,7 @@ const useChat = (sessionId?: string | null) => {
     // 웹소켓 연결 설정
     const wsUrl = `${baseWsUrl}/api/chat/ws/chat/${userId}/${chatId}`;
     console.log('웹소켓 연결 시도:', wsUrl);
-    
+
     try {
       ws.current = new WebSocket(wsUrl);
 
@@ -103,13 +121,13 @@ const useChat = (sessionId?: string | null) => {
   // 메시지 전송
   const sendMessage = useCallback(() => {
     if (!input.trim() || !canSendMessage || isLoading || isTyping || !ws.current) return;
-    
-    const userMessage: ChatMessage = { 
-      sender: 'user', 
-      text: input, 
-      timestamp: new Date().toISOString() 
+
+    const userMessage: ChatMessage = {
+      sender: 'user',
+      text: input,
+      timestamp: new Date().toISOString()
     };
-    
+
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
     setInput('');
@@ -131,11 +149,25 @@ const useChat = (sessionId?: string | null) => {
   // 화면 포커스 효과 추가 - 화면이 포커스를 얻거나 잃을 때 웹소켓 연결 관리
   useFocusEffect(
     React.useCallback(() => {
-      // 화면이 포커스를 얻었을 때 웹소켓 연결
-      console.log('화면 포커스 얻음 - 웹소켓 연결 시도');
-      const chat_id = sessionId ?? Date.now().toString();
-      initWebSocket(chat_id);
-      
+
+      // 비동기 함수로 실행 순서 보장
+      const initConnection = async () => {
+        // 1. 먼저 사용자 ID 가져오기
+        await checkAuth();
+
+        // 2. 사용자 ID가 있으면 웹소켓 연결
+        if (userId) {
+          console.log('화면 포커스 얻음 - 웹소켓 연결 시도');
+          console.log(userId);
+          const chat_id = sessionId ?? Date.now().toString();
+          initWebSocket(chat_id);
+        } else {
+          console.log('사용자 ID가 없어 웹소켓 연결을 시도하지 않습니다.');
+        }
+      };
+
+      initConnection();
+
       // 화면이 포커스를 잃었을 때 웹소켓 연결 종료
       return () => {
         console.log('화면 포커스 잃음 - 웹소켓 연결 종료');
@@ -149,13 +181,15 @@ const useChat = (sessionId?: string | null) => {
         }
         setCanSendMessage(false);
       };
-    }, [sessionId, initWebSocket])
+    }, [sessionId, initWebSocket, userId])
   );
 
   // 컴포넌트 언마운트 시 정리 작업
   useEffect(() => {
+
     return () => {
       console.log('컴포넌트 언마운트 - 모든 리소스 정리');
+
       if (typingInterval.current) {
         clearInterval(typingInterval.current);
         typingInterval.current = null;
@@ -166,7 +200,7 @@ const useChat = (sessionId?: string | null) => {
       }
     };
   }, []);
-  
+
   return {
     messages,
     input,
