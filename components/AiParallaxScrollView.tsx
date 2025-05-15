@@ -3,8 +3,8 @@ import { View, StyleSheet, Image } from 'react-native';
 import Tabs from '@/components/ui/TabBar';
 import { useSelector } from 'react-redux';
 import AiChatScreen from '@/screens/AiChat/AiChatScreen';
-import AiChatListScreen from '@/screens/AiChat/AiChatListScreen';
-import SearchBar from './ui/SearchBar';
+import ChatHistoryScreen from '@/screens/AiChat/ChatHistoryScreen';
+import SearchBar from './Search/SearchBar';
 import TextCapture from '@/screens/AiChat/TextCapture';
 
 const AiParallaxScrollView = () => {
@@ -52,7 +52,7 @@ const AiParallaxScrollView = () => {
           title={selectedTitle}
         />;
       case 1:
-        return <AiChatListScreen
+        return <ChatHistoryScreen
           onSelectChat={handleSelectChat}
           onNewChat={handleNewChat}
         />;
@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: 40,
   },
   searchInputContainer: {
     flex: 1,

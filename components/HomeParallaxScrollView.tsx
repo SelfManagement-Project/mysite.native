@@ -12,7 +12,7 @@ import FinanceScreen from '@/screens/Home/homeTab/Finance/FinanceScreen';
 import LocationScreen from '@/screens/Home/homeTab/Location/LocationScreen';
 import AlarmScreen from '@/screens/Home/homeTab/Alarm/AlarmScreen';
 import MoreScreen from '@/screens/Home/homeTab/More/MoreScreen';
-import SearchBar from './ui/SearchBar';
+import SearchBar from './Search/SearchBar';
 
 const HomeParallaxScrollView = () => {
   const [tab, setTab] = useState(0);
@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: 40,
   },
   contentContainer: {
     flex: 1,

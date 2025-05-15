@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { loginApi } from '@/service/Auth/authService';
+import { loginApi } from '@/services/Auth/authService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     loginRequest,
